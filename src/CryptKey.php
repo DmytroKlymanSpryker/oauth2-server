@@ -22,7 +22,7 @@ class CryptKey
     private const FILE_PREFIX = 'file://';
 
     /**
-     * @var string Key contents
+     * @var string|\OpenSSLAsymmetricKey Key contents
      */
     protected $keyContents;
 
@@ -37,15 +37,17 @@ class CryptKey
     protected $passPhrase;
 
     /**
-     * @param string      $keyPath
-     * @param null|string $passPhrase
-     * @param bool        $keyPermissionsCheck
+     * @param string|\OpenSSLAsymmetricKey $keyPath
+     * @param null|string                  $passPhrase
+     * @param bool                         $keyPermissionsCheck
      */
     public function __construct($keyPath, $passPhrase = null, $keyPermissionsCheck = true)
     {
         $this->passPhrase = $passPhrase;
 
-        if (\strpos($keyPath, self::FILE_PREFIX) !== 0 && $this->isValidKey($keyPath, $this->passPhrase ?? '')) {
+        if ($keyPath instanceof \OpenSSLAsymmetricKey
+            || (\strpos($keyPath, self::FILE_PREFIX) !== 0 && $this->isValidKey($keyPath, $this->passPhrase ?? ''))
+        ) {
             $this->keyContents = $keyPath;
             $this->keyPath = '';
             // There's no file, so no need for permission check.
@@ -86,9 +88,9 @@ class CryptKey
     /**
      * Get key contents
      *
-     * @return string Key contents
+     * @return string|\OpenSSLAsymmetricKey Key contents
      */
-    public function getKeyContents(): string
+    public function getKeyContents()
     {
         return $this->keyContents;
     }

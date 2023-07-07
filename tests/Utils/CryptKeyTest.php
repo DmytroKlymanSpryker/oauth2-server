@@ -14,6 +14,23 @@ class CryptKeyTest extends TestCase
         new CryptKey('undefined file');
     }
 
+    public function testKeyOpenSSLAsymmetricKeyObject()
+    {
+        $publicKey = '-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoKQH6XtTUYPSIWPjtcA3I6VBF3F3TZMd9RImq0YG55qGIJvOOP0MeVib
+D7MFtN4hv6ke3NyYaaUfRaxQ6mrDGzd
+YOzdkqebjUzSNnwd8eQCRL2rvOsgUhf2yghLBlxq+9yfpzDV3KQ58JkCqvV1trBt/ISjPtgbK24V3v55z+cN558DMgyQmV
+8pYrTFzktFVlJP20DR08HzIGimlWq/ixUfY4K
+rznqapnKMw1u6SVVgGem67LC8HO9Mfx3KDseJaG7oUbSWq8vaTW2ewjEfs5JRt1OMUol7CHHtqVprcMizclqCO9Kh
+Dmpussq19l0LbKbGkC73uK0Nm8RyfGhiWCQIDAQAB
+-----END PUBLIC KEY-----';
+
+        $openSSLAsymmetricKey = openssl_get_publickey($publicKey);
+        $key = new CryptKey($openSSLAsymmetricKey);
+
+        $this->assertEquals($openSSLAsymmetricKey, $key->getKeyContents());
+    }
+
     public function testKeyCreation()
     {
         $keyFile = __DIR__ . '/../Stubs/public.key';
